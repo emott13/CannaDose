@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CannaDose</title>
+</head>
+<body class="">
+
+    <h1 class="">CannaDose</h1>
+
+    <div class="calculate_dose">
+        
+        <h3>Calculate how much THC was consumed based on total product amount and amount consumed</h3>
+
+        
+        <form id="product_form">
+            <div class="form_group">
+                <label for="product_types">Select product:</label>
+                <select name="product_types" id="product_types">
+                    <option value="flower">Flower</option>
+                    <option value="vape">Vape</option>
+                    <option value="sand">Sand</option>
+                    <option value="wax">Wax</option>
+                    <option value="troche">Troche</option>
+                    <option value="tincture">Tincture</option>
+                </select>
+            </div>
+
+            <!-- Flower, vape, sand, wax -->
+            <div id="weight_product" class="product_section">
+                <div class="form_group">
+                    <label for="concentration_unit">THC measurement:</label>
+                    <select id="concentration_unit" name="concentration_unit">
+                        <option value="percent">Percent (%)</option>
+                        <option value="mg">Milligrams (mg)</option>
+                    </select>
+                </div>
+
+                <div class="form_group">
+                    <label for="concentration" id="concentration_label">
+                        THC concentration (%):
+                    </label>
+                    <input
+                        type="number"
+                        id="concentration"
+                        name="concentration"
+                        min="0.01"
+                        max="100"
+                        step="0.01"
+                        value="30"
+                        required
+                    >
+                </div>
+
+                <div class="form_group">
+                    <label for="concentration_thca">THCA concentration (%):</label>
+                    <input
+                        type="number"
+                        id="concentration_thca"
+                        name="concentration_thca"
+                        min="0.01"
+                        max="100"
+                        step="0.01"
+                        value="30"
+                        required
+                    >
+                </div>
+
+                <div class="form_group">
+                    <label for="total_weight">Total product weight:</label>
+                    <input
+                        type="number"
+                        id="total_weight"
+                        name="total_weight"
+                        min="0.1"
+                        max="100"
+                        step="0.1"
+                        value="7"
+                        required
+                    >
+                    <select id="weight_unit" name="weight_unit">
+                        <option value="grams">Grams</option>
+                        <option value="ounces">Ounces</option>
+                    </select>
+                </div>
+
+                <div class="form_group">
+                    <label for="consumed_weight">Weight consumed:</label>
+                    <input
+                        type="number"
+                        id="consumed_weight"
+                        name="consumed_weight"
+                        min="0.1"
+                        step="0.1"
+                        value="1"
+                        required
+                    >
+                    <select id="consumed_weight_unit"
+                            name="consumed_weight_unit">
+                        <option value="grams">Grams</option>
+                        <option value="ounces">Ounces</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Troche -->
+            <div id="troche_product" class="product_section" hidden>
+                <div class="form_group">
+                    <label for="troche_mg">THC per package (mg):</label>
+                    <input
+                        type="number"
+                        id="troche_mg"
+                        name="troche_mg"
+                        min="1"
+                        step="1"
+                        value="1"
+                        required
+                    >
+                </div>
+
+                <div class="form_group">
+                    <label for="total_servings">Total servings:</label>
+                    <input
+                        type="number"
+                        id="total_servings"
+                        name="total_servings"
+                        min="1"
+                        step="1"
+                        value="1"
+                        required
+                    >
+                </div>
+
+                <div class="form_group">
+                    <label for="consumed_servings">Servings consumed:</label>
+                    <input
+                        type="number"
+                        id="consumed_servings"
+                        name="consumed_servings"
+                        min="1"
+                        step="1"
+                        value="1"
+                        required
+                    >
+                </div>
+            </div>
+
+            <!-- Tincture -->
+            <div id="tincture_product" class="product_section" hidden>
+                <div class="form-group">
+                    <label for="mg_per_bottle">THC mg per bottle:</label>
+                    <input
+                        type="number"
+                        id="mg_per_bottle"
+                        name="mg_per_bottle"
+                        min="1"
+                        step="1"
+                        value="1"
+                        required
+                    >
+                </div>
+
+                <div class="form_group">
+                    <label for="total_volume">Total product volume (mL):</label>
+                    <input
+                        type="number"
+                        id="total_volume"
+                        name="total_volume"
+                        min="0.1"
+                        step="0.1"
+                        value="100"
+                        required
+                    >
+                </div>
+
+                <div class="form_group">
+                    <label for="consumed_volume">Volume consumed (mL):</label>
+                    <input
+                        type="number"
+                        id="consumed_volume"
+                        name="consumed_volume"
+                        min="0.1"
+                        step="0.1"
+                        value="1"
+                        required
+                    >
+                </div>
+            </div>
+
+            <button type="submit">Calculate THC</button>
+            <output id="calculation_result" aria-live="polite"></output>
+        </form>
+        <script src="scripts/calculations.js" defer></script>
+    </div>
+    <script>
+        const productSelect = document.getElementById("product_types");
+
+        const sections = {
+            weight: document.getElementById("weight_product"),
+            troche: document.getElementById("troche_product"),
+            tincture: document.getElementById("tincture_product")
+        };
+
+        function updateProductFields() {
+            const product = productSelect.value;
+
+            const section =
+                product === "troche" ? "troche" :
+                product === "tincture" ? "tincture" :
+                "weight";
+
+            for (const [key, element] of Object.entries(sections)) {
+                const isActive = key === section;
+
+                element.hidden = !isActive;
+
+                // Hidden fields should not be required or submitted.
+                element.querySelectorAll("input, select").forEach(input => {
+                    input.disabled = !isActive;
+                });
+            }
+        }
+
+        productSelect.addEventListener("change", updateProductFields);
+
+        const concentrationUnit =
+            document.getElementById("concentration_unit");
+
+        const concentration =
+            document.getElementById("concentration");
+
+        const concentrationLabel =
+            document.getElementById("concentration_label");
+
+        function updateConcentrationFields() {
+            const isPercent = concentrationUnit.value === "percent";
+
+            concentrationLabel.textContent = isPercent
+                ? "THC concentration (%):"
+                : "Total THC (mg):";
+
+            concentration.min = isPercent ? "0.01" : "1";
+            concentration.max = isPercent ? "100" : "1000";
+            concentration.step = isPercent ? "0.01" : "1";
+            concentration.value = isPercent ? "30" : "1";
+        }
+
+        concentrationUnit.addEventListener(
+            "change",
+            updateConcentrationFields
+        );
+
+        updateProductFields();
+        updateConcentrationFields();
+    </script>
+</body>
+</html>
