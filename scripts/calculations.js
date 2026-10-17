@@ -1,6 +1,6 @@
-
 const OUNCES_TO_GRAMS = 28.349523125;
 const DECARB_FACTOR = 0.877;
+
 /**
  * Convert a weight to grams.
  */
@@ -16,10 +16,14 @@ function convertToGrams(weight, unit) {
  * @param {FormData} formData
  * @returns {number} consumed_thc_mg
  */
-function calculateConsumedTHC(formData) {
+export function calculateConsumedTHC(formData) {
     const product = formData.get("product_types");
+    const save_calculation = formData.get("save_calculation");
+    console.log("Saved calculation: ", save_calculation)
 
     let consumed_thc_mg;
+    let calculated_total_thc_from_thca;
+    let calculated_total_thc_mg;
 
     switch (product) {
         case "flower":
@@ -60,36 +64,36 @@ function calculateConsumedTHC(formData) {
 
             if (concentrationUnit === "percent") {
 
-                calculated_total_thc_from_thca =            // Calculated THC (%) from THCA equals
-                    concentration_thca *                    // THCA concentration (%) multiplied by
-                    DECARB_FACTOR;                          // decarboxylation factor (0.877, accounts for THC lost in heating).
+                calculated_total_thc_from_thca =      // Calculated THC (%) from THCA equals
+                    concentration_thca *              // THCA concentration (%) multiplied by
+                    DECARB_FACTOR;                    // decarboxylation factor (0.877, accounts for THC lost in heating).
 
-                calculated_total_thc_mg =                   // Calculated THC in mg equals
-                    totalWeight *                           // total product weight multiplied by
-                    (concentration +                        // the result of concentration (%) plus
-                    calculated_total_thc_from_thca) *       // THC (%) from THCA multiplied by
-                    10;                                     // 10 to convert to mg.
+                calculated_total_thc_mg =             // Calculated THC in mg equals
+                    totalWeight *                     // total product weight multiplied by
+                    (concentration +                  // the result of concentration (%) plus
+                    calculated_total_thc_from_thca) * // THC (%) from THCA multiplied by
+                    10;                               // 10 to convert to mg.
 
-                consumed_thc_mg =                           // Total consumed THC in mg equals
-                    calculated_total_thc_mg *               // calculated THC in mg multiplied by
-                    (consumedWeight / totalWeight);         // the result of consumed weight divided by total weight.
+                consumed_thc_mg =                     // Total consumed THC in mg equals
+                    calculated_total_thc_mg *         // calculated THC in mg multiplied by
+                    (consumedWeight / totalWeight);   // the result of consumed weight divided by total weight.
 
             } else if (concentrationUnit === "mg") {
 
-                calculated_total_thc_in_mg_from_thca =      // Calculated THC in mg from THCA equals
-                    concentration_thca *                    // the result of THCA concentration multiplied by
-                    DECARB_FACTOR *                         // decarboxylation factor (0.877, accounts for THC lost in heating) multiplied by
-                    (consumedWeight / totalWeight);         // consumed weight divided by total product weight.
+                calculated_total_thc_from_thca =      // Calculated THC in mg from THCA equals
+                    concentration_thca *              // the result of THCA concentration multiplied by
+                    DECARB_FACTOR *                   // decarboxylation factor (0.877, accounts for THC lost in heating) multiplied by
+                    (consumedWeight / totalWeight);   // consumed weight divided by total product weight.
 
-                calculated_total_thc_mg =                   // Calculated THC in mg equals
-                    (concentration +                        // concentration (mg) plus
-                    calculated_total_thc_in_mg_from_thca) / // THC (mg) from THCA divided by
-                    totalWeight;                            // total product weight.
+                calculated_total_thc_mg =             // Calculated THC in mg equals
+                    (concentration +                  // concentration (mg) plus
+                    calculated_total_thc_from_thca) / // THC (mg) from THCA divided by
+                    totalWeight;                      // total product weight.
                 
-                consumed_thc_mg =                          // Total consumed THC in mg equals
-                    (calculated_total_thc_mg +             // calculated THC in mg plus
-                    calculated_total_thc_mg_from_thca) *   // calculated THC in mg from THCA multiplied by
-                    (consumedWeight / totalWeight);        // consumed weight divided by total product weight.
+                consumed_thc_mg =                     // Total consumed THC in mg equals
+                    (calculated_total_thc_mg +        // calculated THC in mg plus
+                    calculated_total_thc_from_thca) * // calculated THC in mg from THCA multiplied by
+                    (consumedWeight / totalWeight);   // consumed weight divided by total product weight.
 
             } else {
                 throw new Error("Invalid potency unit.");
@@ -159,28 +163,3 @@ function calculateConsumedTHC(formData) {
 
     return consumed_thc_mg;
 }
-
-/**
- * Handle form submission.
- */
-document
-    .getElementById("product_form")
-    .addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const form = event.currentTarget;
-        const formData = new FormData(form);
-        const output = document.getElementById(
-            "calculation_result"
-        );
-
-        try {
-            const consumed_thc_mg =
-                calculateConsumedTHC(formData);
-
-            output.textContent =
-                `Consumed THC: ${consumed_thc_mg.toFixed(2)} mg`;
-        } catch (error) {
-            output.textContent = error.message;
-        }
-    });
