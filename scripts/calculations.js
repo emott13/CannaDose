@@ -16,10 +16,11 @@ function convertToGrams(weight, unit) {
  * @param {FormData} formData
  * @returns {number} consumed_thc_mg
  */
-export function calculateConsumedTHC(formData) {
-    const product = formData.get("product_types");
-    const save_calculation = formData.get("save_calculation");
-    console.log("Saved calculation: ", save_calculation)
+export function calculateConsumedTHC(formData, parsedData) {
+    // const product = formData.get("product_types");
+    const product = parsedData.product_type;
+    // const save_calculation = formData.get("save_calculation");
+    // console.log("Saved calculation: ", save_calculation)
 
     let consumed_thc_mg;
     let calculated_total_thc_from_thca;
@@ -31,21 +32,28 @@ export function calculateConsumedTHC(formData) {
         case "sand":
         case "wax": {
             const concentration = Number(
-                formData.get("concentration")
+                // formData.get("concentration")
+                parsedData.thc_potency
             );
 
-            const concentrationUnit = formData.get(
-                "concentration_unit"
-            ); // index.html line 34
+            // const concentrationUnit = formData.get(
+            //     "concentration_unit"
+            // ); // index.html line 34
+            const concentrationUnit = parsedData.thc_unit;
 
-            const concentration_thca = formData.get(
-                'concentration_thca'
-            );
+            // const concentration_thca = formData.get(
+            //     'concentration_thca'
+            // );
+            const concentration_thca = parsedData.thca_potency;
 
+            // const totalWeight = convertToGrams(
+            //     Number(formData.get("total_weight")),
+            //     formData.get("weight_unit")
+            // );
             const totalWeight = convertToGrams(
-                Number(formData.get("total_weight")),
-                formData.get("weight_unit")
-            );
+                Number(parsedData.product_weight),
+                parsedData.product_weight_unit
+            )
 
             const consumedWeight = convertToGrams(
                 Number(formData.get("consumed_weight")),
@@ -103,12 +111,18 @@ export function calculateConsumedTHC(formData) {
         }
 
         case "troche": {
+            // const concentration = Number(
+            //     formData.get("troche_mg")
+            // );
             const concentration = Number(
-                formData.get("troche_mg")
+                parsedData.thc_concentration
             );
 
+            // const totalServings = Number(
+            //     formData.get("total_servings")
+            // );
             const totalServings = Number(
-                formData.get("total_servings")
+                parsedData.total_servings
             );
 
             const consumedServings = Number(
@@ -128,12 +142,18 @@ export function calculateConsumedTHC(formData) {
         }
 
         case "tincture": {
+            // const mgPerBottle = Number(
+            //     formData.get("mg_per_bottle")
+            // );
             const mgPerBottle = Number(
-                formData.get("mg_per_bottle")
+                parsedData.thc_potency
             );
 
+            // const totalVolume = Number(
+            //     formData.get("total_volume")
+            // );
             const totalVolume = Number(
-                formData.get("total_volume")
+                parsedData.product_volume
             );
 
             const consumedVolume = Number(

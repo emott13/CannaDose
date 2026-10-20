@@ -96,13 +96,13 @@ export function saveProductToLocalStorage(formData) {
             product_info = {
                 product_type: product,
                 brand_name: brand_name,
+                product_name: product_name,
                 strain_type: strain_type,
                 thc_potency: formData.get("concentration"),
                 thc_unit:  formData.get("concentration_unit"),
                 thca_potency:  formData.get("concentration_thca"),
                 product_weight: formData.get("total_weight"),
                 product_weight_unit: formData.get("weight_unit"),
-                saved: now,
             }
             break;
     
@@ -110,10 +110,10 @@ export function saveProductToLocalStorage(formData) {
             product_info = {
                 product_type: product,
                 brand_name: brand_name,
+                product_name: product_name,
                 strain_type: strain_type,
                 thc_concentration: formData.get("troche_mg"),
                 total_servings: formData.get("total_servings"),
-                saved: now,
             }
             break;
 
@@ -121,10 +121,10 @@ export function saveProductToLocalStorage(formData) {
             product_info = {
                 product_type: product,
                 brand_name: brand_name,
+                product_name: product_name,
                 strain_type: strain_type,
                 thc_potency: formData.get("mg_per_bottle"),
                 product_volume: formData.get("total_volume"),
-                saved: now,
             }
             break;
 
@@ -132,9 +132,9 @@ export function saveProductToLocalStorage(formData) {
             break;
     }
     
-    let key = brand_name.toUpperCase() + '_' + product_name.toUpperCase() + '_' + product.toUpperCase();
-    let kt = typeof(key);
-    console.log(`key: ${key}, type ${kt}`)
+    const key = now;
+    // let kt = typeof(key);
+    // console.log(`key: ${key}, type ${kt}`)
     const value = JSON.stringify(product_info);
 
     localStorage.setItem(key, value);

@@ -202,7 +202,9 @@
         </form>
     </div> -->
 
-    <div class="create_product ">
+    <div class="create_product">
+
+        <h3>Save cannabis product</h3>
 
         <div class="form_group">
 
@@ -349,7 +351,7 @@
 
                 <div class="form_group">
                     <label>
-                        <input type="radio" value="hybrid" name="strain_types"> 
+                        <input type="radio" value="hybrid" name="strain_types" required> 
                         Hybrid
                     </label>
                     <label>
@@ -378,67 +380,257 @@
 
     </div>
 
+    <div class="product_calculation">
+
+        <h3>Calculate consumed THC in mg</h3>
+
+        <div class="form_group">
+
+            <form id="calculation_form">
+
+                <div class="form_group">
+                    <label for="serving_selection">Select product:</label>
+                    <select name="serving_selection" id="serving_selection" required>
+                        <!-- <option value=""></option> -->
+                    </select>
+                </div>
+
+                <div class="form_group">
+
+                    <!-- Flower, vape, sand, wax -->
+                    <div id="fvsw_serving" class="calculation_section">
+                        <div class="form_group">
+                            <label for="consumed_weight">Weight consumed:</label>
+                            <input
+                                type="number"
+                                id="consumed_weight"
+                                name="consumed_weight"
+                                min="0.1"
+                                step="0.1"
+                                value="1"
+                                required
+                            >
+                            <select id="consumed_weight_unit"
+                                    name="consumed_weight_unit">
+                                <option value="grams">Grams</option>
+                                <option value="ounces">Ounces</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Troche -->
+                    <div id="troche_serving" class="calculation_section" hidden>
+                        <div class="form_group">
+                            <label for="consumed_servings">Servings consumed:</label>
+                            <input
+                                type="number"
+                                id="consumed_servings"
+                                name="consumed_servings"
+                                min="1"
+                                step="1"
+                                value="1"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Tincture -->
+                    <div id="tincture_serving" class="calculation_section" hidden>
+                        <div class="form_group">
+                            <label for="consumed_volume">Volume consumed (mL):</label>
+                            <input
+                                type="number"
+                                id="consumed_volume"
+                                name="consumed_volume"
+                                min="0.1"
+                                step="0.1"
+                                value="1"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="submit">Calculate THC</button>
+                <output id="calculation_message" aria-live="polite"></output>
+            </form>
+
+        </div>
+
+    </div>
+
     <!-- Handles input changes for different product types -->
     <script>
-        const productSelect = document.getElementById("product_types");
+        { // Display products from local storage.
+            const productSelect = document.getElementById("serving_selection");
 
-        const sections = {
-            weight: document.getElementById("weight_product"),
-            troche: document.getElementById("troche_product"),
-            tincture: document.getElementById("tincture_product")
-        };
+            // for i in localStorage.length
+            // get key using i
+            // get value using key
+            // check for missing key
+            // JSON parse
+            // create option element
+            // text content = obj.brand_name + obj.product_name + obj.product_type
+            // element value = obj.product_type
+            // add element class / id
+            // append element to productSelect
+            // endfor
 
-        function updateProductFields() {
-            const product = productSelect.value;
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
 
-            const section =
-                product === "troche" ? "troche" :
-                product === "tincture" ? "tincture" :
-                "weight";
+                if (value) {
+                    // Parse data.
+                    const parsedData = JSON.parse(value);
 
-            for (const [key, element] of Object.entries(sections)) {
-                const isActive = key === section;
+                    // Create element.
+                    let optionElement = document.createElement("option");
 
-                element.hidden = !isActive;
+                    // Set content and attributes.
+                    optionElement.text = parsedData.brand_name + ' ' + parsedData.product_name + ' ' + parsedData.product_type;
+                    
+                    const type = parsedData.product_type;
+                    if (["flower", "vape", "wax", "sand"].includes(type)) {
+                        optionElement.className = "weight";
+                    } else {
+                        optionElement.className = type;
+                    }
+                    
+                    optionElement.value = key;
+                    optionElement.className = parsedData.product_type;
 
-                // Hidden fields should not be required or submitted.
-                element.querySelectorAll("input, select").forEach(input => {
-                    input.disabled = !isActive;
-                });
+                    // Add to the DOM
+                    productSelect.appendChild(optionElement);
+                } else {
+                    console.log(`Error: key (${key}) not found.`);
+                }
             }
+            
+
+            // const sections = {
+            //     sand: document.getElementsByClassName("weight"),
+            //     troche: document.getElementsByClassName("troche"),
+            //     tincture: document.getElementsByClassName("tincture")
+            // }
+
+            // function updateWeightFields() {
+            //     const product = productSelect.value;
+
+            //     const section =
+            //         product === "troche" ? "troche" :
+            //         product === "tincture" ? "tincture" :
+            //         "weight";
+
+            //     for (const [key, element] of Object.entries(sections)) {
+            //         const isActive = key === section;
+
+            //         element.hidden = !isActive;
+
+            //         // Hidden fields should not be required or submitted.
+            //         element.querySelectorAll("input, select").forEach(input => {
+            //             input.disabled = !isActive;
+            //         });
+            //     }
+            // }
+
+
         }
 
-        productSelect.addEventListener("change", updateProductFields);
+        { // Product save section
+            const productSelect = document.getElementById("product_types");
 
-        const concentrationUnit =
-            document.getElementById("concentration_unit");
+            const sections = {
+                weight: document.getElementById("weight_product"),
+                troche: document.getElementById("troche_product"),
+                tincture: document.getElementById("tincture_product")
+            };
 
-        const concentration =
-            document.getElementById("concentration");
+            function updateProductFields() {
+                const product = productSelect.value;
 
-        const concentrationLabel =
-            document.getElementById("concentration_label");
+                const section =
+                    product === "troche" ? "troche" :
+                    product === "tincture" ? "tincture" :
+                    "weight";
 
-        function updateConcentrationFields() {
-            const isPercent = concentrationUnit.value === "percent";
+                for (const [key, element] of Object.entries(sections)) {
+                    const isActive = key === section;
 
-            concentrationLabel.textContent = isPercent
-                ? "THC concentration (%):"
-                : "Total THC (mg):";
+                    element.hidden = !isActive;
 
-            concentration.min = isPercent ? "0" : "1";
-            concentration.max = isPercent ? "100" : "1000";
-            concentration.step = isPercent ? "0.01" : "1";
-            concentration.value = isPercent ? "30" : "1";
+                    // Hidden fields should not be required or submitted.
+                    element.querySelectorAll("input, select").forEach(input => {
+                        input.disabled = !isActive;
+                    });
+                }
+            }
+
+            productSelect.addEventListener("change", updateProductFields);
+
+            const concentrationUnit =
+                document.getElementById("concentration_unit");
+
+            const concentration =
+                document.getElementById("concentration");
+
+            const concentrationLabel =
+                document.getElementById("concentration_label");
+
+            function updateConcentrationFields() {
+                const isPercent = concentrationUnit.value === "percent";
+
+                concentrationLabel.textContent = isPercent
+                    ? "THC concentration (%):"
+                    : "Total THC (mg):";
+
+                concentration.min = isPercent ? "0" : "1";
+                concentration.max = isPercent ? "100" : "1000";
+                concentration.step = isPercent ? "0.01" : "1";
+                concentration.value = isPercent ? "30" : "1";
+            }
+
+            concentrationUnit.addEventListener(
+                "change",
+                updateConcentrationFields
+            );
+
+            updateProductFields();
+            updateConcentrationFields();
         }
 
-        concentrationUnit.addEventListener(
-            "change",
-            updateConcentrationFields
-        );
+        { // Calculate consumed dose section
+            const calculationSelect = document.getElementById("serving_selection");
 
-        updateProductFields();
-        updateConcentrationFields();
+            const sections = {
+                weight: document.getElementById("fvsw_serving"),
+                troche: document.getElementById("troche_serving"),
+                tincture: document.getElementById("tincture_serving")
+            };
+
+            function updateProductFields() {
+                const productClass = calculationSelect.options[calculationSelect.selectedIndex].className;
+
+                const section =
+                    productClass === "troche" ? "troche" :
+                    productClass === "tincture" ? "tincture" :
+                    "weight";
+
+                for (const [key, element] of Object.entries(sections)) {
+                    const isActive = key === section;
+
+                    element.hidden = !isActive;
+
+                    // Hidden fields should not be required or submitted.
+                    element.querySelectorAll("input, select").forEach(input => {
+                        input.disabled = !isActive;
+                    });
+                }
+            }
+
+            calculationSelect.addEventListener("change", updateProductFields);
+        }
     </script>
     <script type="module" src="main.js"></script>
 </body>
