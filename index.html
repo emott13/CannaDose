@@ -9,7 +9,7 @@
 
     <h1 class="">CannaDose</h1>
 
-    <div class="calculate_dose">
+    <!-- <div class="calculate_dose">
         
         <h3>Calculate how much THC was consumed based on total product amount and amount consumed</h3>
 
@@ -27,7 +27,7 @@
                 </select>
             </div>
 
-            <!-- Flower, vape, sand, wax -->
+            Flower, vape, sand, wax
             <div id="weight_product" class="product_section">
                 <div class="form_group">
                     <label for="concentration_unit">THC measurement:</label>
@@ -104,7 +104,7 @@
                 </div>
             </div>
 
-            <!-- Troche -->
+            Troche
             <div id="troche_product" class="product_section" hidden>
                 <div class="form_group">
                     <label for="troche_mg">THC per package (mg):</label>
@@ -146,7 +146,7 @@
                 </div>
             </div>
 
-            <!-- Tincture -->
+            Tincture
             <div id="tincture_product" class="product_section" hidden>
                 <div class="form_group">
                     <label for="mg_per_bottle">THC mg per bottle:</label>
@@ -200,8 +200,185 @@
             <button type="submit">Calculate THC</button>
             <output id="calculation_result" aria-live="polite"></output>
         </form>
-        <!-- <script src="scripts/calculations.js" defer></script> -->
+    </div> -->
+
+    <div class="create_product ">
+
+        <div class="form_group">
+
+            <form id="product_form">
+
+                <div class="form_group">
+                    <label for="product_types">Select product:</label>
+                    <select name="product_types" id="product_types">
+                        <option value="flower">Flower</option>
+                        <option value="vape">Vape</option>
+                        <option value="sand">Sand</option>
+                        <option value="wax">Wax</option>
+                        <option value="troche">Troche</option>
+                        <option value="tincture">Tincture</option>
+                    </select>
+                </div>
+
+                <!-- Flower, vape, sand, wax -->
+                <div id="weight_product" class="product_section">
+                    <div class="form_group">
+                        <label for="concentration_unit">THC measurement:</label>
+                        <select id="concentration_unit" name="concentration_unit">
+                            <option value="percent">Percent (%)</option>
+                            <option value="mg">Milligrams (mg)</option>
+                        </select>
+                    </div>
+
+                    <div class="form_group">
+                        <label for="concentration" id="concentration_label">
+                            THC concentration (%):
+                        </label>
+                        <input
+                            type="number"
+                            id="concentration"
+                            name="concentration"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            value="30"
+                            required
+                        >
+                    </div>
+
+                    <div class="form_group">
+                        <label for="concentration_thca">THCA concentration (%):</label>
+                        <input
+                            type="number"
+                            id="concentration_thca"
+                            name="concentration_thca"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                            value="30"
+                            required
+                        >
+                    </div>
+
+                    <div class="form_group">
+                        <label for="total_weight">Total product weight:</label>
+                        <input
+                            type="number"
+                            id="total_weight"
+                            name="total_weight"
+                            min="0.1"
+                            max="100"
+                            step="0.1"
+                            value="7"
+                            required
+                        >
+                        <select id="weight_unit" name="weight_unit">
+                            <option value="grams">Grams</option>
+                            <option value="ounces">Ounces</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Troche -->
+                <div id="troche_product" class="product_section" hidden>
+                    <div class="form_group">
+                        <label for="troche_mg">THC per package (mg):</label>
+                        <input
+                            type="number"
+                            id="troche_mg"
+                            name="troche_mg"
+                            min="1"
+                            step="1"
+                            value="1"
+                            required
+                        >
+                    </div>
+
+                    <div class="form_group">
+                        <label for="total_servings">Total servings:</label>
+                        <input
+                            type="number"
+                            id="total_servings"
+                            name="total_servings"
+                            min="1"
+                            step="1"
+                            value="1"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Tincture -->
+                <div id="tincture_product" class="product_section" hidden>
+                    <div class="form_group">
+                        <label for="mg_per_bottle">THC mg per bottle:</label>
+                        <input
+                            type="number"
+                            id="mg_per_bottle"
+                            name="mg_per_bottle"
+                            min="1"
+                            step="1"
+                            value="1"
+                            required
+                        >
+                    </div>
+
+                    <div class="form_group">
+                        <label for="total_volume">Total product volume (mL):</label>
+                        <input
+                            type="number"
+                            id="total_volume"
+                            name="total_volume"
+                            min="0.1"
+                            step="0.1"
+                            value="100"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form_group">
+                    <label for="brand_name">Brand name:</label>
+                    <input type="text" id="brand_name" name="brand_name" required>
+                </div>
+
+                <div class="form_group">
+                    <label for="product_name">Strain/product name:</label>
+                    <input type="text" id="product_name" name="product_name" required>
+                </div>
+
+                <div class="form_group">
+                    <label>
+                        <input type="radio" value="hybrid" name="strain_types"> 
+                        Hybrid
+                    </label>
+                    <label>
+                        <input type="radio" value="indica" name="strain_types"> 
+                        Indica
+                    </label>
+                    <label>
+                        <input type="radio" value="sativa" name="strain_types"> 
+                        Sativa
+                    </label>
+                    <label>
+                        <input type="radio" value="indica_dominant" name="strain_types"> 
+                        Indica-dominant
+                    </label>
+                    <label>
+                        <input type="radio" value="sativa_dominant" name="strain_types"> 
+                        Sativa-dominant
+                    </label>
+                </div>
+
+                <button type="submit">SAVE PRODUCT</button>
+                <output id="save_product_message" aria-live="polite"></output>
+            </form>
+
+        </div>
+
     </div>
+
+    <!-- Handles input changes for different product types -->
     <script>
         const productSelect = document.getElementById("product_types");
 

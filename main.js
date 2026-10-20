@@ -1,8 +1,8 @@
 import { calculateConsumedTHC } from "./scripts/calculations.js";
-import { saveCalculationToLocalStorage } from "./scripts/save_to_local_storage.js";
+import { saveCalculationToLocalStorage, saveProductToLocalStorage } from "./scripts/save_to_local_storage.js";
 
 /**
- * Handle form submission.
+ * Handle product form submission.
  */
 document
     .getElementById("product_form")
@@ -12,18 +12,15 @@ document
         const form = event.currentTarget;
         const formData = new FormData(form);
         const output = document.getElementById(
-            "calculation_result"
+            "save_product_message"
         );
 
         try {
-            const consumed_thc_mg =
-                calculateConsumedTHC(formData);
-            if (formData.get("save_calculation")) {
-                saveCalculationToLocalStorage(formData, consumed_thc_mg);
-            }
+            saveProductToLocalStorage(formData);
             output.textContent =
-                `Consumed THC: ${consumed_thc_mg.toFixed(2)} mg`;
+                "Product saved successfully";
         } catch (error) {
             output.textContent = error.message;
         }
+
     });
