@@ -7,7 +7,7 @@
  */
 export function saveCalculationToLocalStorage(formData, consumed_thc_mg) {
 
-    let calculation = {};
+    const calculation = {};
     const product = formData.get("product_types");
     const date = new Date();
     const now = date.toISOString().split('.')[0];
@@ -88,11 +88,57 @@ export function saveProductToLocalStorage(formData) {
     const brand_name = formData.get("brand_name");
     const strain_type = formData.get("strain_types");
 
+    let product_specification;
+    let vape_spec_type;
     switch (product) {
         case "flower":
+            product_specification = formData.get("flower_specification");
+            break;
         case "vape":
-        case "sand":
+            product_specification = formData.get("vape_specification");
+            vape_spec_type = formData.get("vape_specification_2");
+            break;
         case "wax":
+            product_specification = formData.get("wax_specification");
+            break;
+        default:
+            break;
+    }
+
+    switch (product) {
+        case "flower":
+        case "wax":
+            product_info = {
+                product_type: product,
+                product_specification: product_specification,
+                brand_name: brand_name,
+                product_name: product_name,
+                strain_type: strain_type,
+                thc_potency: formData.get("concentration"),
+                thc_unit:  formData.get("concentration_unit"),
+                thca_potency:  formData.get("concentration_thca"),
+                product_weight: formData.get("total_weight"),
+                product_weight_unit: formData.get("weight_unit"),
+            }
+            break;
+
+        case "vape":
+            product_info = {
+                product_type: product,
+                product_specification: product_specification,
+                vape_spec_type: vape_spec_type,
+                brand_name: brand_name,
+                product_name: product_name,
+                strain_type: strain_type,
+                thc_potency: formData.get("concentration"),
+                thc_unit:  formData.get("concentration_unit"),
+                thca_potency:  formData.get("concentration_thca"),
+                product_weight: formData.get("total_weight"),
+                product_weight_unit: formData.get("weight_unit"),
+            }
+            break;
+
+        case "sand":
             product_info = {
                 product_type: product,
                 brand_name: brand_name,
@@ -105,7 +151,7 @@ export function saveProductToLocalStorage(formData) {
                 product_weight_unit: formData.get("weight_unit"),
             }
             break;
-    
+
         case "troche":
             product_info = {
                 product_type: product,
@@ -138,14 +184,4 @@ export function saveProductToLocalStorage(formData) {
     const value = JSON.stringify(product_info);
 
     localStorage.setItem(key, value);
-}
-
-
-/**
- * Capitalize first letter of a string.
- * 
- * @param {string} string
- */
-function toTitleCase(string) {
-    return string.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
 }

@@ -18,7 +18,6 @@
             <form id="product_form">
 
                 <div class="form_group">
-                    <!-- <label for="product_types">Select product:</label> -->
                     <select name="product_types" id="product_types">
                         <option value="flower">Flower</option>
                         <option value="vape">Vape</option>
@@ -32,8 +31,10 @@
                 <!-- Flower Specifications -->
                 <div class="form_group">
                     <select name="flower_specification" id="flower_specification">
-                        <option value="nug">Premium/Full Nug</option>
-                        <option value="small">Popcorn/Small Buds</option>
+                        <option value="nug">Full Nug</option>
+                        <option value="premium">Premium</option>
+                        <option value="small">Small Buds</option>
+                        <option value="popcorn">Popcorn Buds</option>
                         <option value="mixed">Mixed Buds</option>
                         <option value="rough">Rough cut</option>
                         <option value="shake">Shake</option>
@@ -47,9 +48,18 @@
                     <select name="vape_specification" id="vape_specification" hidden>
                         <option value="resin">Live Resin</option> 
                         <option value="rosin">Live Rosin</option>
-                        <option value="distillate">Distillate</option>
+                        <option value="distillate">Live Resin Distillate</option>
                         <option value="sauce">Live Sauce</option>
                         <option value="co2">CO2</option>
+                        <option value="oil">Oil</option>
+                    </select>
+                </div>
+
+                <div class="form_group">
+                    <select name="vape_specification_2" id="vape_specification_2" hidden>
+                        <option value="cartridge">Cartridge</option>
+                        <option value="disposable">Disposable</option>
+                        <option value="pod">Pod</option>
                     </select>
                 </div>
 
@@ -186,12 +196,10 @@
                 </div>
 
                 <div class="form_group">
-                    <!-- <label for="brand_name">Brand name:</label> -->
                     <input type="text" id="brand_name" name="brand_name" placeholder="Brand Name" required>
                 </div>
 
                 <div class="form_group">
-                    <!-- <label for="product_name">Strain/product name:</label> -->
                     <input type="text" id="product_name" name="product_name" placeholder="Strain Name" required>
                 </div>
 
@@ -335,7 +343,100 @@
                     let optionElement = document.createElement("option");
 
                     // Set content and attributes.
-                    optionElement.text = parsedData.brand_name + ' ' + parsedData.product_name + ' ' + parsedData.product_type;
+                    const productType = parsedData.product_type; // flower, vape, wax, sand, troche, tincture
+                    console.log("Line 347: productType ", productType)
+
+                    let vapeSpec;
+                    let vapeSpecToTitle;
+                    if (productType == 'vape') {
+                        
+                        vapeSpec = parsedData.vape_spec_type;
+                        console.log("Line 352: vapeSpec ", vapeSpec)
+                        vapeSpecToTitle = toTitleCase(vapeSpec);
+                    }
+
+                    console.log("Line 352: ", productType == "vape")
+                    let typeToTitle;
+                    if (productType) {
+                        console.log("Line 358: productType: ", productType);
+                        typeToTitle = toTitleCase(productType);
+                    }
+
+                    const spec = parsedData.product_specification;
+                    let specTitle;
+                    if (spec) {
+                        switch (spec) {
+                            case "nug":
+                                specTitle = "Full Nugs";
+                                break;
+                            case "premium":
+                                specTitle = "Premium";
+                                break;
+                            case "small":
+                                specTitle = "Small Buds";
+                                break;
+                            case "mixed":
+                                specTitle = "Mixed Buds";
+                                break;
+                            case "rough":
+                                specTitle = "Rough Cut";
+                                break;
+                            case "shake":
+                                specTitle = "Shake";
+                                break;
+                            case "ground": 
+                                specTitle = "Ground";
+                                break;
+                            case "infused":
+                                specTitle = "Infused Ground";
+                                break;
+                            case "resin":
+                                specTitle = "Live Resin";
+                                break;
+                            case "rosin":
+                                specTitle = "Live Rosin";
+                                break;
+                            case "sauce":
+                                specTitle = "Live Sauce";
+                                break;
+                            case "distillate":
+                                specTitle = "Live Resin Distillate";
+                                break;
+                            case "co2":
+                                specTitle = "CO2";
+                                break;
+                            case "oil":
+                                specTitle = "Oil";
+                                break;
+                            case "budder":
+                                specTitle = "Budder";
+                                break;
+                            case "badder":
+                                specTitle = "Badder";
+                                break;
+                            case "sugar":
+                                specTitle = "Sugar";
+                                break;
+                            case "crumble":
+                                specTitle = "Crumble";
+                                break;
+                            case "shatter":
+                                specTitle = "Shatter";
+                                break;
+                            case "honeycomb":
+                                specTitle = "Honeycomb";
+                                break;
+                            default:
+                                break;
+                        }
+                        if (typeof vapeSpec === 'undefined') {
+                            optionElement.text = parsedData.brand_name + ' ' + parsedData.product_name + ' ' + specTitle + ' ' + typeToTitle;
+                        } else {
+                            optionElement.text = parsedData.brand_name + ' ' + parsedData.product_name + ' ' + specTitle + ' ' + typeToTitle + ' ' + vapeSpecToTitle;
+                        }
+                    } else {
+                        optionElement.text = parsedData.brand_name + ' ' + parsedData.product_name + ' ' + typeToTitle;
+                    }
                     
                     const type = parsedData.product_type;
                     if (["flower", "vape", "wax", "sand"].includes(type)) {
@@ -399,6 +500,8 @@
                 wax: document.getElementById("wax_specification")
             };
 
+            const vape_spec_type = document.getElementById("vape_specification_2");
+
             function updateProductFields() {
                 const product = productSelect.value;
 
@@ -426,6 +529,13 @@
 
                 for (const [key, element] of Object.entries(specifications)) {
                     const isActive = key === specification;
+
+                    if (key == "vape") {
+                        vape_spec_type.hidden = !isActive;
+                        vape_spec_type.querySelectorAll("input, select").forEach(input => {
+                            input.disabled = !isActive;
+                        });
+                    }
 
                     element.hidden = !isActive;
 
@@ -495,6 +605,17 @@
             }
 
             calculationSelect.addEventListener("change", updateProductFields);
+        }
+    
+        /**
+         * Capitalize first letter of a string.
+         * 
+         * @param {string} string
+         */
+        function toTitleCase(string) {
+            console.log("Line 615: string ", string);
+            console.log("Line 616: string to title ", string.toLowerCase().replace(/\b\w/g, s => s.toUpperCase()));
+            return string.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
         }
     </script>
     <script type="module" src="main.js"></script>
