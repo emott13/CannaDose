@@ -314,133 +314,107 @@
 
     </div>
 
-    <!-- Handles input changes for different product types -->
     <script>
-        { // Display products from local storage.
+        /** 
+        * Display products from local storage.
+        */
+        { 
             const productSelect = document.getElementById("serving_selection");
 
+            // Map product specifications to their display labels.
+            const specificationLabels = {
+                nug: "Full Nugs",
+                premium: "Premium",
+                small: "Small Buds",
+                mixed: "Mixed Buds",
+                rough: "Rough Cut",
+                shake: "Shake",
+                ground: "Ground",
+                infused: "Infused Ground",
+                resin: "Live Resin",
+                rosin: "Live Rosin",
+                sauce: "Live Sauce",
+                distillate: "Live Resin Distillate",
+                co2: "CO2",
+                oil: "Oil",
+                budder: "Budder",
+                badder: "Badder",
+                sugar: "Sugar",
+                crumble: "Crumble",
+                shatter: "Shatter",
+                honeycomb: "Honeycomb",
+            };
+
+            // Products measured by weight.
+            const weightTypes = new Set([
+                "flower",
+                "vape",
+                "wax",
+                "sand",
+            ]);
+
+            // Initialize fragment to store appended elements.
+            const fragment = document.createDocumentFragment();
+
+            // Iterate over local storage entries.
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 const value = localStorage.getItem(key);
 
-                if (value) {
-                    // Parse data.
-                    const parsedData = JSON.parse(value);
-
-                    // Create element.
-                    let optionElement = document.createElement("option");
-
-                    // Set content and attributes.
-                    const productType = parsedData.product_type; // flower, vape, wax, sand, troche, tincture
-                    console.log("Line 347: productType ", productType)
-
-                    let vapeSpec;
-                    let vapeSpecToTitle;
-                    if (productType == 'vape') {
-                        vapeSpec = parsedData.vape_spec_type;
-                        console.log("Line 352: vapeSpec ", vapeSpec)
-                        vapeSpecToTitle = toTitleCase(vapeSpec);
-                    }
-
-                    console.log("Line 352: ", productType == "vape")
-                    let typeToTitle;
-                    if (productType) {
-                        console.log("Line 358: productType: ", productType);
-                        typeToTitle = toTitleCase(productType);
-                    }
-
-                    const spec = parsedData.product_specification;
-                    let specTitle;
-                    if (spec) {
-                        switch (spec) {
-                            case "nug":
-                                specTitle = "Full Nugs";
-                                break;
-                            case "premium":
-                                specTitle = "Premium";
-                                break;
-                            case "small":
-                                specTitle = "Small Buds";
-                                break;
-                            case "mixed":
-                                specTitle = "Mixed Buds";
-                                break;
-                            case "rough":
-                                specTitle = "Rough Cut";
-                                break;
-                            case "shake":
-                                specTitle = "Shake";
-                                break;
-                            case "ground": 
-                                specTitle = "Ground";
-                                break;
-                            case "infused":
-                                specTitle = "Infused Ground";
-                                break;
-                            case "resin":
-                                specTitle = "Live Resin";
-                                break;
-                            case "rosin":
-                                specTitle = "Live Rosin";
-                                break;
-                            case "sauce":
-                                specTitle = "Live Sauce";
-                                break;
-                            case "distillate":
-                                specTitle = "Live Resin Distillate";
-                                break;
-                            case "co2":
-                                specTitle = "CO2";
-                                break;
-                            case "oil":
-                                specTitle = "Oil";
-                                break;
-                            case "budder":
-                                specTitle = "Budder";
-                                break;
-                            case "badder":
-                                specTitle = "Badder";
-                                break;
-                            case "sugar":
-                                specTitle = "Sugar";
-                                break;
-                            case "crumble":
-                                specTitle = "Crumble";
-                                break;
-                            case "shatter":
-                                specTitle = "Shatter";
-                                break;
-                            case "honeycomb":
-                                specTitle = "Honeycomb";
-                                break;
-                            default:
-                                break;
-                        }
-                        if (typeof vapeSpec === 'undefined') {
-                            optionElement.text = parsedData.brand_name + ' ' + parsedData.product_name + ' ' + specTitle + ' ' + typeToTitle;
-                        } else {
-                            optionElement.text = parsedData.brand_name + ' ' + parsedData.product_name + ' ' + specTitle + ' ' + typeToTitle + ' ' + vapeSpecToTitle;
-                        }
-                    } else {
-                        optionElement.text = parsedData.brand_name + ' ' + parsedData.product_name + ' ' + typeToTitle;
-                    }
-                    
-                    const type = parsedData.product_type;
-                    if (["flower", "vape", "wax", "sand"].includes(type)) {
-                        optionElement.className = "weight";
-                    } else {
-                        optionElement.className = type;
-                    }
-                    
-                    optionElement.value = key;
-                    optionElement.className = parsedData.product_type;
-
-                    // Add to the DOM
-                    productSelect.appendChild(optionElement);
-                } else {
-                    console.log(`Error: key (${key}) not found.`);
+                // Check for empty product.
+                if (value === null) {
+                    console.warn(`Product not found for key: ${key}`);
+                    continue;
                 }
+
+                // Handle parsing errors.
+                let product;
+
+                try {
+                    product = JSON.parse(value);
+                } catch (error) {
+                    console.warn(`Invalid product data for key: ${key}`, error);
+                    continue;
+                }
+
+                // Destructure product to name related variables.
+                const {
+                    product_type: type,
+                    product_specification: specification,
+                    brand_name: brand,
+                    product_name: name,
+                    vape_spec_type: vapeSpec,
+                } = product;
+
+                // Build option label from available parts.
+                const labelParts = [
+                    brand,
+                    name,
+                    specificationLabels[specification] ?? "",
+                    type ? toTitleCase(type) : "",
+                    type === "vape" && vapeSpec
+                        ? toTitleCase(vapeSpec)
+                        : "",
+                ];
+
+                // Create option element.
+                const optionElement = document.createElement("option");
+
+                optionElement.value = key;
+                optionElement.textContent = labelParts
+                    .filter(Boolean)
+                    .join(" ");
+
+                // Assign the appropriate CSS class.
+                optionElement.className = weightTypes.has(type)
+                    ? "weight"
+                    : type ?? "";
+
+                // Append to fragment.
+                fragment.appendChild(optionElement);
             }
+            // Append fragment to element.
+            productSelect.appendChild(fragment);
         }
 
         { // Product save section
