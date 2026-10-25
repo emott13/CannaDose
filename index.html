@@ -81,7 +81,6 @@
                 <!-- Flower, vape, sand, wax -->
                 <div id="weight_product" class="product_section">
                     <div class="form_group">
-                        <!-- <label for="concentration_unit">THC measurement:</label> -->
                         <select id="concentration_unit" name="concentration_unit">
                             <option value="percent">Percent (%)</option>
                             <option value="mg">Milligrams (mg)</option>
@@ -89,9 +88,6 @@
                     </div>
 
                     <div class="form_group">
-                        <!-- <label for="concentration" id="concentration_label">
-                            THC concentration (%):
-                        </label> -->
                         <input
                             type="number"
                             id="concentration"
@@ -146,8 +142,7 @@
                             name="troche_mg"
                             min="1"
                             step="1"
-                            value="1"
-                            placeholder="THC"
+                            placeholder="THC mg per serving"
                             required
                         >
                     </div>
@@ -160,7 +155,7 @@
                             name="total_servings"
                             min="1"
                             step="1"
-                            value="1"
+                            placeholder="Total servings per package"
                             required
                         >
                     </div>
@@ -176,7 +171,7 @@
                             name="mg_per_bottle"
                             min="1"
                             step="1"
-                            value="1"
+                            placeholder="THC mg per bottle"
                             required
                         >
                     </div>
@@ -189,7 +184,7 @@
                             name="total_volume"
                             min="0.1"
                             step="0.1"
-                            value="100"
+                            placeholder="Bottle volume in mL"
                             required
                         >
                     </div>
@@ -415,93 +410,6 @@
             }
             // Append fragment to element.
             productSelect.appendChild(fragment);
-        }
-
-        { // Product save section
-            const productSelect = document.getElementById("product_types");
-
-            const sections = {
-                weight: document.getElementById("weight_product"),
-                troche: document.getElementById("troche_product"),
-                tincture: document.getElementById("tincture_product"),
-            };
-
-            const specifications = {
-                flower: document.getElementById("flower_specification"),
-                vape: document.getElementById("vape_specification"),
-                wax: document.getElementById("wax_specification")
-            };
-
-            const vapeSpecType = document.getElementById("vape_specification_2");
-
-            function updateProductFields() {
-                const product = productSelect.value;
-
-                const section =
-                    product === "troche" ? "troche" :
-                    product === "tincture" ? "tincture" :
-                    "weight";
-
-                for (const [key, element] of Object.entries(sections)) {
-                    const isActive = key === section;
-
-                    element.hidden = !isActive;
-
-                    // Hidden fields should not be required or submitted.
-                    element.querySelectorAll("input, select").forEach(input => {
-                        input.disabled = !isActive;
-                    });
-                }
-
-                const specification = 
-                    product === "flower" ? "flower" :
-                    product === "vape" ? "vape" :
-                    product === "wax" ? "wax" : 
-                    null;
-
-                for (const [key, element] of Object.entries(specifications)) {
-                    const isActive = key === specification;
-
-                    if (key == "vape") {
-                        vapeSpecType.hidden = !isActive;
-                        vapeSpecType.querySelectorAll("input, select").forEach(input => {
-                            input.disabled = !isActive;
-                        });
-                    }
-
-                    element.hidden = !isActive;
-
-                    // Hidden fields should not be required or submitted.
-                    element.querySelectorAll("input, select").forEach(input => {
-                        input.disabled = !isActive;
-                    });
-                }
-            }
-
-            productSelect.addEventListener("change", updateProductFields);
-
-            const concentrationUnit =
-                document.getElementById("concentration_unit");
-
-            const concentration =
-                document.getElementById("concentration");
-
-            function updateConcentrationFields() {
-                const isPercent = concentrationUnit.value === "percent";
-
-                concentration.min = isPercent ? "0" : "1";
-                concentration.max = isPercent ? "100" : "1000";
-                concentration.step = isPercent ? "0.01" : "1";
-                concentration.placeholder = isPercent ? "THC %" : "THC mg"
-            }
-
-            concentrationUnit.addEventListener(
-                "change",
-                updateConcentrationFields
-            );
-
-            updateProductFields();
-            updateConcentrationFields();
         }
 
         { // Calculate consumed dose section
