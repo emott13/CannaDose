@@ -4,9 +4,11 @@ import { saveCalculationToLocalStorage, saveProductToLocalStorage } from "./scri
 /**
  * Handle product form submission.
  */
-document
-    .getElementById("product_form")
-    .addEventListener("submit", function (event) {
+
+const productForm = document.getElementById("product_form");
+
+productForm
+    .addEventListener("submit", (event) => {
         event.preventDefault();
 
         const form = event.currentTarget;
@@ -22,14 +24,15 @@ document
         } catch (error) {
             output.textContent = error.message;
         }
-
+        productForm.reset();
     });
 
 /**
  * Handle calculation form submission.
  */
-document
-    .getElementById("calculation_form")
+const calculationForm = document.getElementById("calculation_form");
+
+calculationForm
     .addEventListener("submit", function (event) {
         event.preventDefault();
 
@@ -56,5 +59,5 @@ document
         } else {
             output.textContent = `Error: item not found. /nKey: ${key} /nValue: ${value}`;
         }
-
+        calculationForm.reset();
     })
