@@ -1,5 +1,6 @@
 import { calculateConsumedTHC } from "./scripts/calculations.js";
-import { saveCalculationToLocalStorage, saveProductToLocalStorage } from "./scripts/save_to_local_storage.js";
+import { saveProductToLocalStorage } from "./scripts/save_to_local_storage.js";
+import { toTitleCase } from "./scripts/to_title_case.js";
 
 /** 
 * Display products from local storage.
@@ -131,12 +132,12 @@ import { saveCalculationToLocalStorage, saveProductToLocalStorage } from "./scri
             updateProductFields();
             updateConcentrationFields();
             });
-}
+
 
 /** 
  * Handle product save form elements.
  */
-{
+
     const productSelect = document.getElementById("product_types");
 
     // Cache each section and its form controls once.
@@ -286,6 +287,55 @@ import { saveCalculationToLocalStorage, saveProductToLocalStorage } from "./scri
             } else {
                 output.textContent = `Error: item not found. /nKey: ${key} /nValue: ${value}`;
             }
+
             calculationForm.reset();
+            updateProductFields();
         });
+
+
+/** 
+ * Calculate consumed THC in milligrams.
+ */
+
+    const calculationSelect = document.getElementById("serving_selection");
+
+    const sections = {
+        weight: document.getElementById("fvsw_serving"),
+        troche: document.getElementById("troche_serving"),
+        tincture: document.getElementById("tincture_serving")
+    };
+
+    // Cache each section's controls.
+    const fieldGroups = Object.fromEntries(
+        Object.entries(sections).map(([key, element]) => [
+            key,
+            {
+                element,
+                fields: element.querySelectorAll("input, select"),
+            },
+        ])
+    );
+
+    function updateProductFields() {
+        const productClass = calculationSelect.selectedOptions[0]?.className;
+
+        // Fall back to the weight section for other product types.
+        const activeSection =
+            fieldGroups[productClass] ? productClass : "weight";
+
+        for (const [key, group] of Object.entries(fieldGroups)) {
+            const isActive = key === activeSection;
+
+            group.element.hidden = !isActive;
+
+            group.fields.forEach(field => {
+                field.disabled = !isActive;
+            });
+        }
+    }
+
+    calculationSelect.addEventListener("change", updateProductFields);
+
+    // Set the correct section on initial page load.
+    updateProductFields();
 }

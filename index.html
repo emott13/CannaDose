@@ -310,60 +310,6 @@
     </div>
 
     <script>
-        { // Calculate consumed dose section
-            const calculationSelect = document.getElementById("serving_selection");
-
-            const sections = {
-                weight: document.getElementById("fvsw_serving"),
-                troche: document.getElementById("troche_serving"),
-                tincture: document.getElementById("tincture_serving")
-            };
-
-            // Cache each section's controls.
-            const fieldGroups = Object.fromEntries(
-                Object.entries(sections).map(([key, element]) => [
-                    key,
-                    {
-                        element,
-                        fields: element.querySelectorAll("input, select"),
-                    },
-                ])
-            );
-
-            function updateProductFields() {
-                const productClass = calculationSelect.selectedOptions[0]?.className;
-
-                // Fall back to the weight section for other product types.
-                const activeSection =
-                    fieldGroups[productClass] ? productClass : "weight";
-
-                for (const [key, group] of Object.entries(fieldGroups)) {
-                    const isActive = key === activeSection;
-
-                    group.element.hidden = !isActive;
-
-                    group.fields.forEach(field => {
-                        field.disabled = !isActive;
-                    });
-                }
-            }
-
-            calculationSelect.addEventListener("change", updateProductFields);
-
-            // Set the correct section on initial page load.
-            updateProductFields();
-        }
-    
-        /**
-         * Capitalize first letter of a string.
-         * 
-         * @param {string} string
-         */
-        function toTitleCase(string) {
-            console.log("Line 615: string ", string);
-            console.log("Line 616: string to title ", string.toLowerCase().replace(/\b\w/g, s => s.toUpperCase()));
-            return string.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
-        }
     </script>
     <script type="module" src="main.js"></script>
 </body>
