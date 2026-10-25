@@ -162,18 +162,18 @@ import { toTitleCase } from "./scripts/to_title_case.js";
 
     const specifications = {
         flower: createFieldGroup(
-            document.getElementById("flower_specification")
+            document.getElementById("flower_specification_group")
         ),
         vape: createFieldGroup(
-            document.getElementById("vape_specification")
+            document.getElementById("vape_specification_group")
         ),
         wax: createFieldGroup(
-            document.getElementById("wax_specification")
+            document.getElementById("wax_specification_group")
         ),
     };
 
     const vapeSpecType = createFieldGroup(
-        document.getElementById("vape_specification_2")
+        document.getElementById("vape_specification_2_group")
     );
 
     // Define the fields needed for each product type.
