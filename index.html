@@ -319,27 +319,39 @@
                 tincture: document.getElementById("tincture_serving")
             };
 
+            // Cache each section's controls.
+            const fieldGroups = Object.fromEntries(
+                Object.entries(sections).map(([key, element]) => [
+                    key,
+                    {
+                        element,
+                        fields: element.querySelectorAll("input, select"),
+                    },
+                ])
+            );
+
             function updateProductFields() {
-                const productClass = calculationSelect.options[calculationSelect.selectedIndex].className;
+                const productClass = calculationSelect.selectedOptions[0]?.className;
 
-                const section =
-                    productClass === "troche" ? "troche" :
-                    productClass === "tincture" ? "tincture" :
-                    "weight";
+                // Fall back to the weight section for other product types.
+                const activeSection =
+                    fieldGroups[productClass] ? productClass : "weight";
 
-                for (const [key, element] of Object.entries(sections)) {
-                    const isActive = key === section;
+                for (const [key, group] of Object.entries(fieldGroups)) {
+                    const isActive = key === activeSection;
 
-                    element.hidden = !isActive;
+                    group.element.hidden = !isActive;
 
-                    // Hidden fields should not be required or submitted.
-                    element.querySelectorAll("input, select").forEach(input => {
-                        input.disabled = !isActive;
+                    group.fields.forEach(field => {
+                        field.disabled = !isActive;
                     });
                 }
             }
 
             calculationSelect.addEventListener("change", updateProductFields);
+
+            // Set the correct section on initial page load.
+            updateProductFields();
         }
     
         /**
