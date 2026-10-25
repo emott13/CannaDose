@@ -245,7 +245,7 @@
                 <div class="form_group">
                     <label for="serving_selection">Select product:</label>
                     <select name="serving_selection" id="serving_selection" required>
-                        <!-- <option value=""></option> -->
+                        <!-- option elements added by JS -->
                     </select>
                 </div>
 
@@ -319,18 +319,6 @@
         { // Display products from local storage.
             const productSelect = document.getElementById("serving_selection");
 
-            // for i in localStorage.length
-            // get key using i
-            // get value using key
-            // check for missing key
-            // JSON parse
-            // create option element
-            // text content = obj.brand_name + obj.product_name + obj.product_type
-            // element value = obj.product_type
-            // add element class / id
-            // append element to productSelect
-            // endfor
-
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 const value = localStorage.getItem(key);
@@ -349,7 +337,6 @@
                     let vapeSpec;
                     let vapeSpecToTitle;
                     if (productType == 'vape') {
-                        
                         vapeSpec = parsedData.vape_spec_type;
                         console.log("Line 352: vapeSpec ", vapeSpec)
                         vapeSpecToTitle = toTitleCase(vapeSpec);
@@ -454,35 +441,6 @@
                     console.log(`Error: key (${key}) not found.`);
                 }
             }
-            
-
-            // const sections = {
-            //     sand: document.getElementsByClassName("weight"),
-            //     troche: document.getElementsByClassName("troche"),
-            //     tincture: document.getElementsByClassName("tincture")
-            // }
-
-            // function updateWeightFields() {
-            //     const product = productSelect.value;
-
-            //     const section =
-            //         product === "troche" ? "troche" :
-            //         product === "tincture" ? "tincture" :
-            //         "weight";
-
-            //     for (const [key, element] of Object.entries(sections)) {
-            //         const isActive = key === section;
-
-            //         element.hidden = !isActive;
-
-            //         // Hidden fields should not be required or submitted.
-            //         element.querySelectorAll("input, select").forEach(input => {
-            //             input.disabled = !isActive;
-            //         });
-            //     }
-            // }
-
-
         }
 
         { // Product save section
@@ -500,7 +458,7 @@
                 wax: document.getElementById("wax_specification")
             };
 
-            const vape_spec_type = document.getElementById("vape_specification_2");
+            const vapeSpecType = document.getElementById("vape_specification_2");
 
             function updateProductFields() {
                 const product = productSelect.value;
@@ -531,8 +489,8 @@
                     const isActive = key === specification;
 
                     if (key == "vape") {
-                        vape_spec_type.hidden = !isActive;
-                        vape_spec_type.querySelectorAll("input, select").forEach(input => {
+                        vapeSpecType.hidden = !isActive;
+                        vapeSpecType.querySelectorAll("input, select").forEach(input => {
                             input.disabled = !isActive;
                         });
                     }
@@ -553,9 +511,6 @@
 
             const concentration =
                 document.getElementById("concentration");
-
-            const concentrationLabel =
-                document.getElementById("concentration_label");
 
             function updateConcentrationFields() {
                 const isPercent = concentrationUnit.value === "percent";
