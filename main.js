@@ -1,6 +1,7 @@
 import { calculateConsumedTHC } from "./scripts/calculations.js";
 import { saveProductToLocalStorage } from "./scripts/save_to_local_storage.js";
 import { toTitleCase } from "./scripts/to_title_case.js";
+import { validateInput } from "./scripts/validate_input.js";
 
 /** 
 * Display products from local storage.
@@ -338,4 +339,44 @@ import { toTitleCase } from "./scripts/to_title_case.js";
 
     // Set the correct section on initial page load.
     updateProductFields();
+}
+
+/**
+ * Handle accessible error message display.
+ */
+{
+    function setupValidation(groups) {
+        for (const { element, error } of Object.values(groups)) {
+            if (!element || !error) continue;
+
+            element.addEventListener("blur", () => {
+                validateInput(element, error);
+            });
+        }
+    }
+
+    const elements = {
+        concentration: {
+            element: document.getElementById("concentration"),
+            error: document.getElementById("concentration_error"),
+        },
+        concentrationTHCA: {
+            element: document.getElementById("concentration_thca"),
+            error: document.getElementById("concentration_thca_error"),
+        },
+        totalWeight: {
+            element: document.getElementById("total_weight"),
+            error: document.getElementById("total_weight_error"),
+        },
+        trocheMG: {
+            element: document.getElementById("troche_mg"),
+            error: document.getElementById("troche_mg_error"),
+        },
+        totalServings: {
+            element: document.getElementById("total_servings"),
+            error: document.getElementById("total_servings_error"),
+        }
+    };
+
+    setupValidation(elements);
 }

@@ -102,8 +102,10 @@
                             min="0"
                             max="100"
                             step="0.01"
+                            aria-describedby="concentration_error"
                             required
                         >
+                        <p id="concentration_error" hidden></p>
                     </div>
 
                     <div class="form_group">
@@ -116,8 +118,10 @@
                             max="100"
                             step="0.01"
                             placeholder="THCA %"
+                            aria-describedby="concentration_thca_error"
                             required
                         >
+                        <p id="concentration_thca_error" hidden></p>
                     </div>
 
                     <div class="form_group">
@@ -130,8 +134,11 @@
                             max="100"
                             step="0.1"
                             placeholder="Total weight"
+                            aria-describedby="total_weight_error"
                             required
                         >
+                        <p id="total_weight_error" hidden></p>
+
                         <label for="weight_unit">Select weight unit:</label>
                         <select id="weight_unit" name="weight_unit">
                             <option value="grams">Grams</option>
@@ -151,8 +158,10 @@
                             min="1"
                             step="1"
                             placeholder="THC mg per package"
+                            aria-describedby="troche_mg_error"
                             required
                         >
+                        <p id="troche_mg_error" hidden></p>
                     </div>
 
                     <div class="form_group">
@@ -164,8 +173,10 @@
                             min="1"
                             step="1"
                             placeholder="Total servings per package"
+                            aria-describedby="total_servings_error"
                             required
                         >
+                        <p id="total_servings_error" hidden></p>
                     </div>
                 </div>
 
@@ -200,12 +211,12 @@
 
                 <div class="form_group">
                     <label for="brand_name">Brand name:</label>
-                    <input type="text" id="brand_name" name="brand_name" placeholder="Brand Name" required>
+                    <input type="text" id="brand_name" name="brand_name" maxlength="30" placeholder="Brand Name" required>
                 </div>
 
                 <div class="form_group">
                     <label for="product_name">Strain name:</label>
-                    <input type="text" id="product_name" name="product_name" placeholder="Strain Name" required>
+                    <input type="text" id="product_name" name="product_name" maxlength="30" placeholder="Strain Name" required>
                 </div>
 
                 <div class="form_group">
@@ -315,7 +326,7 @@
 
                 </div>
 
-                <button type="submit">Calculate THC</button>
+                <button type="submit">CALCULATE THC</button>
                 <output id="calculation_message" aria-live="polite"></output>
             </form>
 
