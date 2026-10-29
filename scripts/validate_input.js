@@ -31,7 +31,7 @@ export function validateInput(input, errorElement) {
     } else if (input.validity.badInput) {
         errorElement.textContent = "Enter a valid number.";
     } else if (input.validity.tooLong) {
-        errorElement.textContent = "This value is too long."
+        errorElement.textContent = "Enter a value with fewer characters."
     } else {
         errorElement.textContent = "Please enter a valid value.";
     }
